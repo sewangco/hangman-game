@@ -2,6 +2,35 @@ const Hangman = function (word, remainingGuesses, getPuzzle){
     this.word = word.toLowerCase().split('')
     this.remainingGuesses= remainingGuesses
     this.guessedLetters = []
+    this.status= 'playing'
+}
+
+Hangman.prototype.calculateStatus = function(status){
+    const finished = this.word.every((letter)=> this.guessedLetters.includes(letter))
+
+    // alt 2
+    // const lettersUnguessed = this.word.filter((letter)=> {
+    //     return !this.guessedLetters.includes(letter)
+    // })
+    // let finished = lettersUnguessed.length === 0
+
+    //alt 3
+    // let finished = true
+    // this.word.forEach((letter) => {
+    //     if (this.guessedLetters.includes(letter)){
+
+    //     } else {
+    //         finished= false
+    //     }
+    // })
+
+    if(this.remainingGuesses ===0){
+        this.status = 'failed'
+    } else if (finished){
+        this.status= 'finished'
+    } else{
+        this.status = 'playing'
+    }
     
 }
 Hangman.prototype.getPuzzle= function(word){
@@ -27,22 +56,9 @@ Hangman.prototype.makeGuess= function(guess){
     if (isUnique && badGuess){
         this.remainingGuesses--
     }
+    this.calculateStatus()
 }
 
 
-const game1 = new Hangman('cat', 2)
 
-console.log(game1.getPuzzle())
-console.log(game1.remainingGuesses)
 
-// const game2 = new Hangman('New Jersey', 4)
-// game2.makeGuess('w')
-// console.log(game2.getPuzzle())
-
-window.addEventListener('keypress',function(e){
-    const guess= String.fromCharCode(e.charCode)
-    game1.makeGuess(guess)
-    console.log(game1.getPuzzle())
-    console.log(game1.remainingGuesses)
-    
-})
